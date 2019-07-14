@@ -1,62 +1,72 @@
 import os
 import csv
 
-csvpath = os.path.join("Resources", "budget_data.csv")
+csvpath = os.path.join("Resources", "election_data.csv")
 
 with open(csvpath, 'r') as csvfile:
 
     reader = csv.reader(csvfile, delimiter=',')
-    
-    csv_header = next(reader)
 
-    dates = []
-    money = []
-    change =[]
-    change_alt = []
-    previous = 0
+    csvheader = next(reader)
+
+    candidate = []
 
     for row in reader:
-        dates.append(row[0])
-        money.append(row[1])
-        
-        diff = int(row[1]) - int(previous)
-        previous = row[1]
-        change.append(diff)
+        candidate.append(row[2])
 
-zipped = zip(dates, change)
-zipped_lst = list(zipped)
-change.remove(change[0])
-zipped_lst.remove(zipped_lst[0])
+    candidate_count = [[x,candidate.count(x)] for x in set(candidate)]
+    
+    votes = []
+    name = []
+    
+    for row in candidate_count:
+        name.append(row[0])
+        votes.append(row[1])
 
-total_months = len(dates)
-total = sum(map(int, money))
-average_change = sum(change) / len(change)
-increase = max(change)
-decrease = min(change)
+    candidate_zip = zip(name, votes)
+    candidate_list = list(candidate_zip)
 
-month_dec = 0
-month_inc = 0
+    winner = max(votes)
 
-for row in zipped_lst:
-    if row[1] == increase:
-        month_inc = row[0]
-    if row[1] == decrease:
-        month_dec = row[0]
+    for row in candidate_list:
+        if row[1] == winner:
+            winner_name = row[0]       
+            
+total_votes = len(candidate)
 
-print(f'Financial Analysis')
-print(f'___________________________')
-print(f'Total Months: {total_months}')
-print(f'Total: ${total}')
-print(f'Average Change: ${average_change:.2f}')
-print(f'Greatest Increase in Profits: {month_inc} ({increase})')
-print(f'Greatest Decrease in Profits: {month_dec} ({decrease})')
+correy_total = candidate.count('Correy')
+correy_percent = int(correy_total) / int(total_votes)
 
-with open('PyBank.txt', 'w') as text_file:
-    print(f'Financial Analysis', file=text_file)
-    print(f'___________________________', file=text_file)
-    print(f'Total Months: {total_months}', file=text_file)
-    print(f'Total: ${total}', file=text_file)
-    print(f'Average Change: ${average_change:.2f}', file=text_file)
-    print(f'Greatest Increase in Profits: {month_inc} ({increase})', file=text_file)
-    print(f'Greatest Decrease in Profits: {month_dec} ({decrease})', file=text_file)
-	
+o_tooley_total = candidate.count("O'Tooley")
+o_tooley_percent = o_tooley_total / total_votes
+
+li_total = candidate.count('Li')
+li_percent = li_total / total_votes
+
+khan_total = candidate.count('Khan')
+khan_percent = khan_total / total_votes
+
+print(f'Election Results')
+print(f'-------------------------')
+print(f'Total Votes: {total_votes}')
+print(f'-------------------------')
+print(f'Khan: {khan_percent:.3%} ({khan_total})')
+print(f'Correy: {correy_percent:.3%} ({correy_total})')
+print(f'Li: {li_percent:.3%} ({li_total})')
+print(f"O'Tooley: {o_tooley_percent:.3%} ({o_tooley_total})")
+print(f'-------------------------')
+print(f'Winner: {winner_name}')
+print(f'-------------------------')
+
+with open('PyPoll.txt', 'w') as text_file:
+    print(f'Election Results', file=text_file)
+    print(f'-------------------------', file=text_file)
+    print(f'Total Votes: {total_votes}', file=text_file)
+    print(f'-------------------------', file=text_file)
+    print(f'Khan: {khan_percent:.3%} ({khan_total})', file=text_file)
+    print(f'Correy: {correy_percent:.3%} ({correy_total})', file=text_file)
+    print(f'Li: {li_percent:.3%} ({li_total})', file=text_file)
+    print(f"O'Tooley: {o_tooley_percent:.3%} ({o_tooley_total})", file=text_file)
+    print(f'-------------------------', file=text_file)
+    print(f'Winner: {winner_name}', file=text_file)
+    print(f'-------------------------', file=text_file)
